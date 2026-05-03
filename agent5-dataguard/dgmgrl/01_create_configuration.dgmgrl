@@ -1,0 +1,18 @@
+-- 01_create_configuration.dgmgrl — bootstrap a new Data Guard Broker config.
+-- Bindings:
+--   ${CFG_NAME}             — config display name (e.g., MYCDB_DG)
+--   ${PRIMARY_UNIQUE_NAME}
+--   ${STANDBY_UNIQUE_NAME}
+--   ${PRIMARY_TNS}          — TNS alias for primary
+--   ${STANDBY_TNS}          — TNS alias for standby
+
+CREATE CONFIGURATION '${CFG_NAME}' AS
+  PRIMARY DATABASE IS '${PRIMARY_UNIQUE_NAME}'
+  CONNECT IDENTIFIER IS ${PRIMARY_TNS};
+
+ADD DATABASE '${STANDBY_UNIQUE_NAME}' AS
+  CONNECT IDENTIFIER IS ${STANDBY_TNS}
+  MAINTAINED AS PHYSICAL;
+
+-- Defer enable until set_modes step has run, so initial state is clean.
+SHOW CONFIGURATION;

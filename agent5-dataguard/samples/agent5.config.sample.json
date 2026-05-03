@@ -1,0 +1,24 @@
+{
+  "oracle_home_version": "19.22.0.0",
+  "primary_tns": "MYCDB_PRI",
+  "standby_tns": "MYCDB_STBY",
+  "rman_parallelism": 8,
+  "rman_timeout_seconds": 14400,
+  "apply_wait_seconds": 1800,
+  "standby": {
+    "ssh_node1_host": "exadb-stby-node1.contoso.internal",
+    "ssh_user": "opc",
+    "ssh_private_key_path": "/home/runner/.ssh/odaa_standby_id_rsa",
+    "scan_name": "exadb-stby-scan.contoso.internal",
+    "scan_port": 1521,
+    "wallet_location": "/u01/app/oracle/admin/MYCDB_STBY/wallet/tde",
+    "wallet_root": "/u01/app/oracle/admin/MYCDB_STBY/wallet",
+    "data_diskgroup": "+DATA",
+    "reco_diskgroup": "+RECO"
+  },
+  "thresholds": {
+    "max_apply_lag_minutes": 5,
+    "max_transport_lag_minutes": 2,
+    "max_gap_count": 0
+  }
+}

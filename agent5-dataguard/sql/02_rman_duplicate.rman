@@ -1,0 +1,46 @@
+-- 02_rman_duplicate.rman — DUPLICATE FROM ACTIVE DATABASE FOR STANDBY
+-- Bindings:
+--   ${DB_NAME}              — primary/standby db_name (same)
+--   ${PRIMARY_UNIQUE_NAME}  — primary db_unique_name
+--   ${STANDBY_UNIQUE_NAME}  — standby db_unique_name
+--   ${PARALLELISM}          — parallel channel count
+
+CONFIGURE DEVICE TYPE DISK PARALLELISM ${PARALLELISM} BACKUP TYPE TO BACKUPSET;
+CONFIGURE COMPRESSION ALGORITHM 'BASIC';
+
+RUN {
+  ALLOCATE CHANNEL prmy1 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy2 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy3 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy4 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy5 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy6 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy7 DEVICE TYPE DISK;
+  ALLOCATE CHANNEL prmy8 DEVICE TYPE DISK;
+  ALLOCATE AUXILIARY CHANNEL stby1 DEVICE TYPE DISK;
+  ALLOCATE AUXILIARY CHANNEL stby2 DEVICE TYPE DISK;
+  ALLOCATE AUXILIARY CHANNEL stby3 DEVICE TYPE DISK;
+  ALLOCATE AUXILIARY CHANNEL stby4 DEVICE TYPE DISK;
+
+  DUPLICATE TARGET DATABASE FOR STANDBY
+    FROM ACTIVE DATABASE
+    DORECOVER
+    SPFILE
+      SET db_unique_name='${STANDBY_UNIQUE_NAME}'
+      SET db_create_file_dest='+DATA'
+      SET db_create_online_log_dest_1='+DATA'
+      SET db_create_online_log_dest_2='+RECO'
+      SET db_recovery_file_dest='+RECO'
+      SET cluster_database='FALSE'
+      SET log_archive_dest_2='SERVICE=${PRIMARY_UNIQUE_NAME} ASYNC NOAFFIRM REOPEN=15 VALID_FOR=(ONLINE_LOGFILES,PRIMARY_ROLE) DB_UNIQUE_NAME=${PRIMARY_UNIQUE_NAME}'
+      SET fal_server='${PRIMARY_UNIQUE_NAME}'
+      SET db_file_name_convert='${PRIMARY_UNIQUE_NAME}','${STANDBY_UNIQUE_NAME}'
+      SET log_file_name_convert='${PRIMARY_UNIQUE_NAME}','${STANDBY_UNIQUE_NAME}'
+      SET local_listener=''
+      SET remote_listener=''
+    NOFILENAMECHECK
+    USING COMPRESSED BACKUPSET;
+}
+
+-- Re-enable cluster_database after duplicate so the standby can start in RAC mode.
+SQL "ALTER SYSTEM SET cluster_database=TRUE SCOPE=SPFILE SID=''*''";

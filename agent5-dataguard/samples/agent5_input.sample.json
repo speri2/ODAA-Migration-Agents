@@ -1,0 +1,50 @@
+{
+  "schema_version": "agent5-input/1.0",
+  "generated_by": "agent4-db-bootstrap-tde",
+  "generated_at": "2026-05-02T18:00:00Z",
+  "primary_database": {
+    "db_name": "MYCDB",
+    "db_unique_name": "MYCDB_PRI",
+    "instance_count": 2,
+    "archivelog": "ARCHIVELOG",
+    "force_logging": "YES",
+    "supplemental_log_data_min": "YES",
+    "tde": {
+      "wallet_location": "/u01/app/oracle/admin/MYCDB/wallet/tde",
+      "wallet_status": "OPEN",
+      "wallet_root": "/u01/app/oracle/admin/MYCDB/wallet"
+    },
+    "standby_redo_logs": {
+      "count": 6,
+      "size_mb": 1024,
+      "threads": 2
+    }
+  },
+  "standby_target": {
+    "db_unique_name": "MYCDB_STBY",
+    "role": "PHYSICAL_STANDBY"
+  },
+  "ssh": {
+    "node1_host": "exadb-pri-node1.contoso.internal",
+    "user": "opc",
+    "private_key_path": "/home/runner/.ssh/odaa_primary_id_rsa"
+  },
+  "scan": {
+    "name": "exadb-pri-scan.contoso.internal",
+    "port": 1521
+  },
+  "dataguard_directives": {
+    "protection_mode": "MAX_PERFORMANCE",
+    "transport_mode": "ASYNC",
+    "apply_mode": "REAL_TIME_APPLY",
+    "fast_start_failover": false
+  },
+  "secrets": {
+    "akv_vault_name": "kv-odaa-mycdb",
+    "akv_secret_names": {
+      "sys": "mycdb-sys-password",
+      "tde": "mycdb-tde-keystore-password",
+      "wallet": "mycdb-wallet-password"
+    }
+  }
+}
