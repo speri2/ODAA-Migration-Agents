@@ -1,0 +1,21 @@
+{
+  "db_name": "MYCDB",
+  "db_unique_name": "MYCDB_PRI",
+  "standby_unique_name": "MYCDB_STBY",
+  "pdb_name": "MYPDB",
+  "oracle_home_version": "19.22.0.0",
+  "character_set": "AL32UTF8",
+  "national_character_set": "AL16UTF16",
+  "migration_user": "MIGADM",
+  "standby_redo_log_count": 4,
+  "standby_redo_log_size_mb": 1024,
+  "akv": {
+    "vault_name": "kv-odaa-prod-eastus",
+    "secret_names": {
+      "sys": "agent4-sys-password",
+      "tde": "agent4-tde-password",
+      "wallet": "agent4-wallet-password"
+    }
+  },
+  "allow_generated_passwords": false
+}

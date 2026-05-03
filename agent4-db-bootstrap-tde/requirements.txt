@@ -1,0 +1,4 @@
+paramiko==3.4.1
+jsonschema==4.22.0
+azure-identity==1.16.0
+azure-keyvault-secrets==4.8.0

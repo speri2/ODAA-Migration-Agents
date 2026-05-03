@@ -1,0 +1,53 @@
+-- 06_migration_user.sql — provision the migration user inside the PDB.
+-- Granted: CREATE SESSION, RESOURCE, DATAPUMP_*, plus quotas/privs required by RMAN catalog
+-- and Data Pump impdp/expdp during the cutover window.
+--
+-- Bindings:
+--   ${PDB_NAME}     — target PDB (e.g., MYPDB)
+--   ${MIG_USER}     — username (e.g., C##MIG or MIGADM)
+--   ${MIG_PASSWORD} — password (Oracle-19c verifier compliant)
+WHENEVER SQLERROR EXIT FAILURE
+SET ECHO ON FEEDBACK ON LINESIZE 200
+
+ALTER SESSION SET CONTAINER = ${PDB_NAME};
+
+DECLARE
+  v_count NUMBER;
+BEGIN
+  SELECT COUNT(*) INTO v_count FROM dba_users WHERE username = UPPER('${MIG_USER}');
+  IF v_count = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE USER ${MIG_USER} IDENTIFIED BY "${MIG_PASSWORD}" '||
+                      'DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP '||
+                      'QUOTA UNLIMITED ON USERS PROFILE DEFAULT';
+  ELSE
+    -- Rotate password on re-run
+    EXECUTE IMMEDIATE 'ALTER USER ${MIG_USER} IDENTIFIED BY "${MIG_PASSWORD}" ACCOUNT UNLOCK';
+  END IF;
+END;
+/
+
+GRANT CREATE SESSION, ALTER SESSION TO ${MIG_USER};
+GRANT RESOURCE, CONNECT TO ${MIG_USER};
+GRANT DATAPUMP_EXP_FULL_DATABASE, DATAPUMP_IMP_FULL_DATABASE TO ${MIG_USER};
+GRANT EXP_FULL_DATABASE, IMP_FULL_DATABASE TO ${MIG_USER};
+GRANT SELECT_CATALOG_ROLE TO ${MIG_USER};
+GRANT EXECUTE_CATALOG_ROLE TO ${MIG_USER};
+GRANT CREATE ANY DIRECTORY, DROP ANY DIRECTORY TO ${MIG_USER};
+GRANT READ, WRITE ON DIRECTORY DATA_PUMP_DIR TO ${MIG_USER};
+GRANT FLASHBACK ANY TABLE, SELECT ANY TABLE TO ${MIG_USER};
+GRANT CREATE TABLE, CREATE PROCEDURE, CREATE TRIGGER TO ${MIG_USER};
+GRANT UNLIMITED TABLESPACE TO ${MIG_USER};
+
+-- RMAN catalog user (when this PDB hosts the catalog) — comment out if catalog is elsewhere
+GRANT RECOVERY_CATALOG_OWNER TO ${MIG_USER};
+
+-- Confirm
+SELECT username, account_status, default_tablespace, common
+  FROM dba_users WHERE username = UPPER('${MIG_USER}');
+
+SELECT granted_role
+  FROM dba_role_privs
+ WHERE grantee = UPPER('${MIG_USER}')
+ ORDER BY granted_role;
+
+EXIT SUCCESS;

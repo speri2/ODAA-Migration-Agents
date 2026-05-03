@@ -1,0 +1,49 @@
+{
+  "schema_version": "agent4-input/1.0",
+  "generated_at": "2026-05-02T18:23:11.000Z",
+  "status": "ready",
+  "upstream": {
+    "azure": {
+      "subscription_id": "00000000-0000-0000-0000-000000000000",
+      "resource_group": "rg-odaa-prod-eastus",
+      "location": "eastus",
+      "exadata_infra_name": "exa-prod-eastus-01",
+      "vm_cluster_name": "vmc-prod-eastus-01"
+    },
+    "vm_cluster": {
+      "scan_dns_name": "vmc-prod-eastus-01-scan.client.oraclevcn.com",
+      "scan_ip_addresses": ["10.40.10.11", "10.40.10.12", "10.40.10.13"],
+      "node_dns_names": [
+        "vmc-prod-eastus-01-node1.client.oraclevcn.com",
+        "vmc-prod-eastus-01-node2.client.oraclevcn.com"
+      ],
+      "oracle_home_version": "19.22.0.0",
+      "compute_count": 2,
+      "storage_count": 3
+    },
+    "oracle_net": {
+      "tcp_port": 1521,
+      "tcps_port": 2484,
+      "service_domain": "client.oraclevcn.com",
+      "checks_summary": {
+        "scan_dns_resolves": "pass",
+        "scan_listener_tcp": "pass",
+        "scan_listener_tcps": "pass"
+      }
+    },
+    "ssh": {
+      "node1_host": "vmc-prod-eastus-01-node1.client.oraclevcn.com",
+      "user": "opc",
+      "private_key_path": "/home/agent/.ssh/odaa_id_ed25519"
+    }
+  },
+  "agent4_directives": {
+    "proceed": true,
+    "ssh_target_node1": "vmc-prod-eastus-01-node1.client.oraclevcn.com",
+    "ssh_user": "opc",
+    "ssh_private_key_path": "/home/agent/.ssh/odaa_id_ed25519",
+    "use_scan_dns_name": "vmc-prod-eastus-01-scan.client.oraclevcn.com",
+    "use_scan_port_tcp": 1521,
+    "use_scan_port_tcps": 2484
+  }
+}
