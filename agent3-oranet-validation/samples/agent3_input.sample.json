@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-05-02T17:00:00Z",
+  "agent": "agent2-terraform",
+  "next_agent": "agent3-oranet-validation",
+  "azure": {
+    "subscription_id": "00000000-0000-0000-0000-000000000000",
+    "tenant_id": "00000000-0000-0000-0000-000000000000",
+    "resource_group_name": "rg-exam-prod-odaa",
+    "location": "eastus",
+    "availability_zone": "2"
+  },
+  "exadata_infrastructure": {
+    "azure_id": "/subscriptions/.../resourceGroups/rg-exam-prod-odaa/providers/Oracle.Database/cloudExadataInfrastructures/exa-exam-prod",
+    "ocid": "ocid1.cloudexadatainfrastructure.oc1...",
+    "shape": "Exadata.X9M",
+    "compute_count": 2,
+    "storage_count": 3
+  },
+  "vm_cluster": {
+    "azure_id": "/subscriptions/.../resourceGroups/rg-exam-prod-odaa/providers/Oracle.Database/cloudVmClusters/vmc-exam-prod",
+    "ocid": "ocid1.cloudvmcluster.oc1...",
+    "cluster_name": "exampprdc1",
+    "hostname_prefix": "exampprd",
+    "gi_version": "19.0.0.0",
+    "license_model": "BringYourOwnLicense",
+    "cpu_core_count": 32,
+    "memory_gb": 720,
+    "data_storage_tb": 100,
+    "domain": "odaa.example.internal",
+    "time_zone": "UTC",
+    "node_count": 2
+  },
+  "network": {
+    "vnet_id": "/subscriptions/.../virtualNetworks/vnet-exam-prod-odaa",
+    "client_subnet_id": "/subscriptions/.../subnets/snet-odaa-client",
+    "backup_subnet_id": "/subscriptions/.../subnets/snet-odaa-backup",
+    "client_subnet_cidr": "10.50.10.0/24"
+  },
+  "oracle_net": {
+    "scan_dns_name": "exampprd-scan.odaa.example.internal",
+    "scan_listener_port_tcp": 1521,
+    "scan_listener_port_tcp_ssl": 2484
+  },
+  "ssh": {
+    "private_key_path": "./generated_id_rsa",
+    "authorized_keys": ["ssh-rsa AAAA... agent3-sample"],
+    "os_user": "opc"
+  }
+}
